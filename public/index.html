@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Chatbot</title>
+  </head>
+  <body>
+    <h1>Chatbot</h1>
+    <form id="chatForm">
+      <input type="text" id="userMessage" />
+      <button type="submit">Send</button>
+    </form>
+    <div id="chatLog"></div>
+  </body>
+  <script>
+    document.getElementById("chatForm").addEventListener("submit", async (event) => {
+      event.preventDefault();
+
+      const userMessage = document.getElementById("userMessage").value;
+      const chatLog = document.getElementById("chatLog");
+
+      const response = await fetch("http://localhost:3000/chat", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          messages: [
+            { role: "system", content: "You are a helpful assistant." },
+            { role: "user", content: userMessage },
+          ],
+        }),
+      });
+
+      const data = await response.json();
+      chatLog.innerHTML += `<p>User: ${userMessage}</p>`;
+      chatLog.innerHTML += `<p>Chatbot: ${data.content}</p>`;
+    });
+  </script>
+</html>
